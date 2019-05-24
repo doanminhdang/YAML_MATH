@@ -136,16 +136,16 @@ lp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:
 
 qp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:
 
 nlp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:

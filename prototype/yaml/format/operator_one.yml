@@ -1,10 +1,9 @@
 # operator taking only one input
-required:
-  - inputs:
-      form: list
-      length: =1
-  - outputs:
-      form: list
-      length: max
-additional:
-  -
+- inputs:
+    category: required
+    form: list
+    length: =1
+- outputs:
+    category: required
+    form: list
+    length: free

@@ -6,7 +6,8 @@ result_pass = 1
 result_failed = 0
 result_unknown = -1
 result_missing = -2
-result_notype = -3
+result_excess = -3
+result_notype = -4
 
 def yaml_file_check_against_folder(yaml_file, yaml_template_folder):
     templates = yaml_template_folder_read(yaml_template_folder)
@@ -36,6 +37,7 @@ def yaml_file_check(yaml_file, templates):
     result = []
     for block_name in list_block_names:
         yaml_block = yaml_series[block_name]
+        print('block_name: ', block_name)
         result_block = yaml_block_check(yaml_block, templates)
         result.append({block_name: result_block})
     return result
@@ -49,36 +51,53 @@ def yaml_block_check(yaml_block, templates):
         type_template = templates[block_type]
         result = yaml_block_type_check(yaml_block, type_template)
     return result
-# required:
-#   - inputs:
-#       form: list
-#       length: max
 
 def yaml_block_type_check(yaml_block, type_template):
-    result_required = check_condition_group(yaml_block, type_template, 'required')
-    result_additional = check_condition_group(yaml_block, type_template, 'additional')
-    result = {'required': result_required, 'additional': result_additional}
+    result_required = check_condition_required(yaml_block, type_template)
+    result_allowed = check_condition_allowed(yaml_block, type_template)
+    result = {'required': result_required, 'required_additional': result_allowed}
     return result
 
-def check_condition_group(yaml_block, type_template, group_type):
+def check_condition_required(yaml_block, type_template):
     # group_type: 'required' or 'additional'
-    print('yaml_block: ', yaml_block)
-    print('type_template: ', type_template)
-    print('group_type: ', group_type)
+    # print('yaml_block: ', yaml_block)
+    # print('type_template: ', type_template)
     result_required = []
-    for condition in type_template[group_type]: # condition = OrderedDict([('inputs', ...
+    for condition in type_template: # condition = OrderedDict([('inputs', ...
         condition_keys = [key for key in condition.keys()] # ['inputs']
         for key in condition_keys: # key = 'input'
             print('key: ', key)
             # print('yaml_block:', yaml_block)
             # print('yaml_block_key', yaml_block[key])
             # if yaml_block[key] is missing: report missing
-            if key not in yaml_block:
-                result_key = result_missing
-            else:
-                result_key = check_condition_key(yaml_block[key], condition[key])
-            result_required.append({key: result_key})
+
+            if condition[key]['category'] == 'required':
+                if key not in yaml_block:
+                    result_key = result_missing
+                else:
+                    result_key = check_condition_key(yaml_block[key], condition[key])
+                result_required.append({key: result_key})
     return result_required
+
+def check_condition_allowed(yaml_block, type_template):
+    # group_type: 'required' or 'additional'
+    # print('yaml_block: ', yaml_block)
+    # print('type_template: ', type_template)
+    result_allowed = []
+    # build list of allowed keys
+    # type_template is a list: [OrderedDict([('inputs', ...)]), OrderedDict([('outputs', ... ]
+    # all_allowed_keys = [[b for b in a.keys()] for a in type_template] #[['inputs'], ['outputs'], ... ]
+    all_allowed_keys = [[b for b in a.keys()][0] for a in type_template] #['inputs', 'outputs', ... ]
+
+    for appeared_key in yaml_block:
+        if appeared_key != 'type':
+            if appeared_key not in all_allowed_keys:
+                result_key = result_excess
+            else:
+                position_key = all_allowed_keys.index(appeared_key)
+                result_key = check_condition_key(yaml_block[appeared_key], type_template[position_key][appeared_key])
+            result_allowed.append({appeared_key: result_key})
+    return result_allowed
 
 def check_condition_key(yaml_block_key, condition_key):
     # If it is a list, then check the length of items

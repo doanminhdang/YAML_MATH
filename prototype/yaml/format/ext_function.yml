@@ -1,11 +1,12 @@
-required:
-  - inputs:
-      form: list
-      length: max
-  - outputs:
-      form: list
-      length: max
-  - where:
-      form: map
-additional:
-  -
+- inputs:
+    category: required
+    form: list
+    length: free
+- outputs:
+    category: required
+    form: list
+    length: free
+- where:
+    category: required
+    form: list
+    length: =1
