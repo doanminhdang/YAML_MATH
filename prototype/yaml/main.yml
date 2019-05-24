@@ -87,18 +87,17 @@ grad_descent:
   outputs:
     - name: Dog
       type: float
-  internal:
-    var:
-      - name: X_current
-        type: float
-        init: X_init
-      - name: X_next
-        type: float
-        init: 0
-    const:
-      - name: Tol
-        type: float
-        init: 0.000001
+  var:
+    - name: X_current
+      type: float
+      init: X_init
+    - name: X_next
+      type: float
+      init: 0
+  const:
+    - name: Tol
+      type: float
+      init: 0.000001
   commands:
     - assign:
         input_left: X_next

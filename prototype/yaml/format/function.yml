@@ -13,9 +13,11 @@
     category: required
     form: list
     length: free
-- internal:
+- const:
     category: additional
-    form: map
-    keys:
-      - const
-      - var
+    form: list
+    length: free
+- var:
+    category: additional
+    form: list
+    length: free
