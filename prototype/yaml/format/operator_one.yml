@@ -1,0 +1,10 @@
+# operator taking only one input
+required:
+  - inputs:
+      form: list
+      length: =1
+  - outputs:
+      form: list
+      length: max
+additional:
+  -

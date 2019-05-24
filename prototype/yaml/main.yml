@@ -1,7 +1,10 @@
 # to be parsed with OrderedDict by https://github.com/wimglenn/oyaml
 main:
+  type: function
   inputs:
+    -
   outputs:
+    -
   const:
     - name: Daisy
       type: float
@@ -19,12 +22,13 @@ main:
     - name: F_opt
       type: float
       init: 0
-  assign:
-    input_left: X_mickey
-    input_right: grad_descent(grad_f, X_mickey)
-  assign:
-    input_left: F_opt
-    input_right: f_objective(Daisy, Paul, X_mickey)
+  commands:
+    assign:
+      input_left: X_mickey
+      input_right: grad_descent(grad_f, X_mickey)
+    assign:
+      input_left: F_opt
+      input_right: f_objective(Daisy, Paul, X_mickey)
 
 f_objective:
   type: function

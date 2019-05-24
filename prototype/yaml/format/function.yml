@@ -1,0 +1,21 @@
+# required: every component in required category must appear in the object
+# addtional: all components in the object must be in either required or addtional
+# union(set of required, set of addtional) > set of object components > set of required
+- inputs:
+    category: required
+    form: list
+    length: free
+- outputs:
+    category: required
+    form: list
+    length: free
+- commands:
+    category: required
+    form: list
+    length: free
+- internal:
+    category: additional
+    form: map
+    keys:
+      - const
+      - var
