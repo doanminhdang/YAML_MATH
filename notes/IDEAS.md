@@ -38,9 +38,13 @@ A program could look like:
 
 (find minimum of x^2 + 3*x + 5)
 
+```
 main:
+  type: function
   inputs:
+    -
   outputs:
+    -
   const:
     - name: Daisy
       type: float
@@ -58,12 +62,13 @@ main:
     - name: F_opt
       type: float
       init: 0
-  assign:
-    input_left: X_mickey
-    input_right: grad_descent(grad_f, X_mickey)
-  assign:
-    input_left: F_opt
-    input_right: f_objective(Daisy, Paul, X_mickey)
+  commands:
+    assign:
+      input_left: X_mickey
+      input_right: grad_descent(grad_f, X_mickey)
+    assign:
+      input_left: F_opt
+      input_right: f_objective(Daisy, Paul, X_mickey)
 
 f_objective:
   type: function
@@ -122,18 +127,17 @@ grad_descent:
   outputs:
     - name: Dog
       type: float
-  internal:
-    var:
-      - name: X_current
-        type: float
-        init: X_init
-      - name: X_next
-        type: float
-        init: 0
-    const:
-      - name: Tol
-        type: float
-        init: 0.000001
+  var:
+    - name: X_current
+      type: float
+      init: X_init
+    - name: X_next
+      type: float
+      init: 0
+  const:
+    - name: Tol
+      type: float
+      init: 0.000001
   commands:
     - assign:
         input_left: X_next
@@ -171,16 +175,17 @@ lp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:
 
 qp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:
 
 nlp_solver:
   type: ext_function
   inputs:
   outputs:
-  commands:
+  where:
+```
