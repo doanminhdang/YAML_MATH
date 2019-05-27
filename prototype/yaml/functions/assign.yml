@@ -1,0 +1,11 @@
+type: function
+inputs:
+  - number: =2
+      - input_1:
+          - name: input_left
+          - length: =1
+          - type: var
+      - input_2:
+          - name: input_right
+          - length: =1
+          - type: var
