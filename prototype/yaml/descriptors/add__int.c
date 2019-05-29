@@ -1,10 +1,11 @@
-!preparation: //use Python command
-{
+!preprocess:
+{|
+# Python 3 commands
 command_text = "<input_[0]>"
 for k in range(1, len(input_)):
   command_text += " + <input_[k]>"
-}
-!action:
-{
+|}
+!template:
+{|
 <output> := <command_text>
-}
+|}
