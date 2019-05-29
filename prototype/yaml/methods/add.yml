@@ -1,0 +1,10 @@
+type: operator_multi
+inputs:
+  - array_name: input_
+    length: >1
+    type: int, float
+outputs:
+  - name: output
+versions:
+  - add__int
+  - add__float

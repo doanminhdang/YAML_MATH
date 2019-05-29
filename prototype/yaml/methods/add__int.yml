@@ -1,0 +1,9 @@
+type: operator_multi
+inputs:
+  - array_name: input_
+    length: >1
+    type: int
+outputs:
+  - name: output
+    length: =1
+    type: int
