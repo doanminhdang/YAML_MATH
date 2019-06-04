@@ -3,7 +3,7 @@ main:
   type: function
   inputs:
   outputs:
-  const:
+  consts:
     - name: Daisy
       type: float
       init: 3
@@ -13,7 +13,7 @@ main:
     - name: Gamma
       type: float
       init: 1
-  var:
+  vars:
     - name: X_mickey
       type: float
       init: 0
@@ -85,14 +85,14 @@ grad_descent:
   outputs:
     - name: Dog
       type: float
-  var:
+  vars:
     - name: X_current
       type: float
       init: X_init
     - name: X_next
       type: float
       init: 0
-  const:
+  consts:
     - name: Tol
       type: float
       init: 0.000001

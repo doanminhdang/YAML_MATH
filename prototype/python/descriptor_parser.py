@@ -19,7 +19,7 @@ descriptor_postprocess_label = '!postprocess:'
 
 def descriptor_file_parse(descriptor_file, method_file):
     descriptor = descriptor_file_read(descriptor_file)
-    yaml_method = method_file_read(method_file)
+    yaml_method = yaml_method_file_read(method_file)
     preprocess_parse(descriptor_file)
 
 def yaml_method_file_read(yaml_method_file):

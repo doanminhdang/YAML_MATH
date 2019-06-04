@@ -13,11 +13,11 @@
     category: required
     form: list
     length: free
-- const:
+- consts:
     category: additional
     form: list
     length: free
-- var:
+- vars:
     category: additional
     form: list
     length: free

@@ -92,6 +92,6 @@ for k in range(1, len(input_)):
 The code in `!preprocess` and `!postprocess` are written in Python 3. The content inside `!code` will be treated as text, where each block `<var_name>` (put a variable name inside brackets `<>`) will be detected and compared to all names that appear in: the YAML file that describes the method (name of items in inputs, outputs), the `!preprocess` section in the same descriptor. For example, if `!preprocess` produce the variable `command_text` with value `'input_[0] + input_[1] + input_[2]'`, then the placeholder `<command_text>` in `!code` will be evaluated by the default translator (written in Python) with commands like
 ```
 var_name = 'command_text'
-var_text = eval(var_name)
+var_text = exec(var_name)
 ```
 and the result of translating the section `!code` in this example `<output> = <command_text>` is: `'<output> = <input_[0]> + <input_[1]> + <input_[2]>'`. This string will be accessed by the Python code in the section `!postprocess` with the name `<code>`. At the end of `!postprocess`, there must be a string with the name `code`, that would be used by the translator. The translator will replace placeholders of the naming `<var_name>` in `code` to the corresponding variables in the YAML file describing the method.
