@@ -9,3 +9,7 @@ for k in range(1, len(input_)):
 {|
 <output> := <command_text>
 |}
+!postprocess:
+{|
+code = <code>
+|}

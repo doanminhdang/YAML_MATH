@@ -61,13 +61,13 @@ TODO: consider dropping the requirement for those keys, no key is equivalent to 
 
 For each method, there must be a descriptor that describes how the method should be translated into the desired programming language; except with overloading methods, for such case only descriptors for the specific methods are required.
 
-Example: with method add.yml there are two versions add__int.yml and add__float.yml, in order to translate the project into C, there must be add__int.c and add__float.c.
+Example: with method add.yml there are two versions add__int.yml and add__float.yml (method name followed by double underscore is used as convention to name overloading methods), in order to translate the project into C, there must be add__int.c and add__float.c.
 
 In each descriptor, there could be three sections: `!preprocess`, `!code`, `!postprocess`, each block of commands is put inside `{|` and `|}`, each of these opening and closing block markers must take a whole line.
 
 `!preprocess` and `!postprocess` are optional, if they exist, the commands in `!preprocess` written in Python will be evaluated first, then processing the text in `!code` as a string, then `!postprocess` written in Python. If the keyword `!code` does not exists, the default code text is anything between the end of `!preprocess` and the beginning of `!postprocess` blocks. If none of these three keywords exists, then everything is considered `!code` code.
 
- Example: in add__float.c, we want to construct a loop to create the series of pluses: `<output> := <input_[0]> + ... + <input_[end]>`, we use Python commands in the !preprocess block:
+ Example: in add__float.c, we want to construct a loop to create the series of pluses: `<output> := <input_[0]> + ... + <input_[end]>`, we use Python commands in the `!preprocess` block:
 
 ```
 !preprocess:
@@ -84,7 +84,7 @@ for k in range(1, len(input_)):
 
 !postprocess:
 {|
-<action>
+<code>
 |}
 
 ```
@@ -92,6 +92,6 @@ for k in range(1, len(input_)):
 The code in `!preprocess` and `!postprocess` are written in Python 3. The content inside `!code` will be treated as text, where each block `<var_name>` (put a variable name inside brackets `<>`) will be detected and compared to all names that appear in: the YAML file that describes the method (name of items in inputs, outputs), the `!preprocess` section in the same descriptor. For example, if `!preprocess` produce the variable `command_text` with value `'input_[0] + input_[1] + input_[2]'`, then the placeholder `<command_text>` in `!code` will be evaluated by the default translator (written in Python) with commands like
 ```
 var_name = 'command_text'
-eval(var_name)
+var_text = eval(var_name)
 ```
-and the result of translating the section `!code` is: `'<output> = <input_[0]> + <input_[1]> + <input_[2]>'`. This string will be accessed by the Python code in the section `!postprocess` with the name `<code>`. At the end of `!postprocess`, there must be a string with the name `code`, that would be used by the translator. The translator will replace placeholders of the naming `<var_name>` in `code` to the corresponding variables in the YAML file describing the method.
+and the result of translating the section `!code` in this example `<output> = <command_text>` is: `'<output> = <input_[0]> + <input_[1]> + <input_[2]>'`. This string will be accessed by the Python code in the section `!postprocess` with the name `<code>`. At the end of `!postprocess`, there must be a string with the name `code`, that would be used by the translator. The translator will replace placeholders of the naming `<var_name>` in `code` to the corresponding variables in the YAML file describing the method.
