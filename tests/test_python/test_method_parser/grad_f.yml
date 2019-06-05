@@ -1,0 +1,19 @@
+grad_f:
+  type: function
+  inputs:
+    - name: X_val
+      type: float
+  outputs:
+    - name: Grad_f_val
+      type: float
+  commands:
+    - assign:
+        input_left: Grad_f_val
+        input_right:
+          add:
+            - multiply:
+              - value: 2
+                type: float
+              - X_val
+            - value: 3
+              type: float

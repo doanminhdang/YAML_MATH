@@ -36,6 +36,12 @@ def descriptor_file_read(descriptor_file):
         descriptor_components = descriptor_parse(descriptor_text)
     return descriptor_components
 
+def check_descriptor_syntax_file(descriptor_file):
+    with open(descriptor_file, 'r') as text_file:
+        descriptor_text = text_file.read()
+    check_ok, check_err_msg = check_descriptor_syntax(descriptor_text)
+    return check_ok, check_err_msg
+
 def check_descriptor_syntax(descriptor_text):
     """
     Check syntax of a descriptor text:
