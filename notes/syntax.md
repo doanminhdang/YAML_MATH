@@ -17,7 +17,7 @@ In which, for each key:
 
 - length: either be compared with an integer using 1-char comparison (>=, <= are not acceptable), e.g. >1, =2..., or "free" means that there is no restriction on the number.
 
-# methods:
+# methods (functions + elements):
 
 These are YAML files, each corresponds to a method.
 
@@ -54,6 +54,16 @@ Each "name" or "array_name" include the following required keys:
 - type: list all the allowed type, separated with comma. Example: int, float. If type is "free", then type will not be checked.
 
 - type_qualifier: list type qualifiers like var, const. If type_qualifier is "free", then type qualifier will not be checked.
+
+A method could belong to one of the two groups: **elements** or **functions**.
+
+## elements:
+
+Each element must have a descriptor to describe how to translate it into the target language.
+
+## functions:
+
+Each function is described by the YAML file only, no descriptor file.
 
 TODO: consider dropping the requirement for those keys, no key is equivalent to key: free. Then only listed keys are to be checked.
 
