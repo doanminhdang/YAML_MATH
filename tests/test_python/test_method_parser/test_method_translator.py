@@ -15,6 +15,13 @@ def test_get_inputs():
     inputs = method_translator.get_inputs(yaml_series)
     assert inputs == [{name:'X_val', type:'float', length:1}]
 
+def test_get_outputs():
+    file = 'tests/test_python/test_method_parser/grad_f.yml'
+    with open(file, 'r') as yf:
+        yaml_series = yaml.load(yf)
+    inputs = method_translator.get_outputs(yaml_series)
+    assert inputs == [{name:'Grad_f_val', type:'float', length:1}]
+
 
 def test_translate_file():
     file = 'tests/test_python/test_method_parser/grad_f.yml'
