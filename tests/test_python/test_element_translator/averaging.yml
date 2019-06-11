@@ -1,0 +1,15 @@
+averaging:
+  type: function
+  inputs:
+    - name: A_1
+      type: float
+    - name: A_2
+      type: float
+    - name: A_3
+      type: float
+  outputs:
+  commands:
+    - add:
+      - A_1
+      - A_2
+      - A_3

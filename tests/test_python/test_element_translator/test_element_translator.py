@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import os, sys
+import oyaml as yaml
+
+from sys import path
+
+# Run pytest in the top folder, the current folder is where pytest runs
+from prototype.python import element_translator
+
+def test_translate_el_short():
+    module_file = 'tests/test_python/test_element_translator/averaging.yml'
+    element_file = 'prototype/yaml/methods/add__float.yml'
+    descriptor_file = 'prototype/yaml/descriptors/add__float.c'
+    translated_text = element_translator.translate_module_file(module_file, element_file, descriptor_file)
+    assert translated_text == 'A_1 + A_2 + A_3'

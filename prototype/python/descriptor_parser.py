@@ -17,16 +17,6 @@ descriptor_preprocess_label = '!preprocess:'
 descriptor_midprocess_label = '!code:'
 descriptor_postprocess_label = '!postprocess:'
 
-def descriptor_file_parse(descriptor_file, method_file):
-    descriptor = descriptor_file_read(descriptor_file)
-    yaml_method = yaml_method_file_read(method_file)
-    preprocess_parse(descriptor_file)
-
-def yaml_method_file_read(yaml_method_file):
-    with open(yaml_method_file, 'r') as yf:
-        yaml_series = yaml.load(yf)
-    return yaml_series
-
 def descriptor_file_read(descriptor_file):
     with open(descriptor_file, 'r') as text_file:
         descriptor_text = text_file.read()
@@ -48,7 +38,7 @@ def check_descriptor_syntax(descriptor_text):
     - If preprocess part exist: it must have an opening then a closing markup
     - If postprocess part exist: it must have an opening then a closing markup
     - the preprocess part must be before the postprocess part
-    - in the postprocess part, there must be a variable named code to be assigned at the last line
+    - in the postprocess part, there must be a variable named `code` to be assigned at the last line
     Output: check_flag, error_message
     - check_flag: True is good, False is bad
     - error_message: id of error, specifed in the module. 0 for no error.
