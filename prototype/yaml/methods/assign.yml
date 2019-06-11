@@ -1,12 +1,13 @@
-type: operator_two
-inputs:
-  - name: input_left
-    length: =1
-    type: free
-    type_qualifier: var
-  - name: input_right
-    length: =1
-    type: free
-    type_qualifier: var, const
-outputs:
-  -
+assign:
+  type: operator_two
+  inputs:
+    - name: input_left
+      length: =1
+      type: free
+      type_qualifier: var
+    - name: input_right
+      length: =1
+      type: free
+      type_qualifier: var, const
+  outputs:
+    -

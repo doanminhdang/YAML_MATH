@@ -1,3 +1,6 @@
+"""
+Check syntax of a module described in a YAML file
+"""
 # import pdb
 import sys
 import oyaml as yaml
@@ -9,60 +12,60 @@ result_missing = -2
 result_excess = -3
 result_notype = -4
 
-def yaml_file_check_against_folder(yaml_file, yaml_template_folder):
-    templates = yaml_template_folder_read(yaml_template_folder)
-    print(templates)
-    result = yaml_file_check(yaml_file, templates)
+def yaml_module_file_check_against_folder(yaml_file, yaml_format_folder):
+    formats = yaml_format_folder_read(yaml_format_folder)
+    print(formats)
+    result = yaml_module_file_check(yaml_file, formats)
     return result
 
-def yaml_template_folder_read(yaml_template_folder):
+def yaml_format_folder_read(yaml_format_folder):
     import glob, os
-    list_yaml_template_files = glob.glob(yaml_template_folder + '/*.yml', recursive=True)
-    templates = dict()
-    for yaml_template_file in list_yaml_template_files:
-        filename_only = os.path.basename(yaml_template_file)
+    list_yaml_format_files = glob.glob(yaml_format_folder + '/*.yml', recursive=True)
+    formats = dict()
+    for yaml_format_file in list_yaml_format_files:
+        filename_only = os.path.basename(yaml_format_file)
         main_name, ext_name = os.path.splitext(filename_only)
-        templates.update({main_name: yaml_template_file_read(yaml_template_file)})
-    return templates
+        formats.update({main_name: yaml_format_file_read(yaml_format_file)})
+    return formats
 
-def yaml_template_file_read(yaml_template_file):
-    with open(yaml_template_file, 'r') as yf:
-        yaml_series = yaml.load(yf)
+def yaml_format_file_read(yaml_format_file):
+    with open(yaml_format_file, 'r') as yf:
+        yaml_series = yaml.load(yf, Loader=yaml.FullLoader)
     return yaml_series
 
-def yaml_file_check(yaml_file, templates):
+def yaml_module_file_check(yaml_file, formats):
     with open(yaml_file, 'r') as yf:
-        yaml_series = yaml.load(yf)
+        yaml_series = yaml.load(yf, Loader=yaml.FullLoader)
     list_block_names = [key for key in yaml_series.keys()] # convert odict_keys to list
     result = []
     for block_name in list_block_names:
         yaml_block = yaml_series[block_name]
         print('block_name: ', block_name)
-        result_block = yaml_block_check(yaml_block, templates)
+        result_block = yaml_block_check(yaml_block, formats)
         result.append({block_name: result_block})
     return result
 
-def yaml_block_check(yaml_block, templates):
+def yaml_block_check(yaml_block, formats):
     if 'type' not in yaml_block:
         result = result_notype
     else:
         block_type = yaml_block['type']
         print('Type to check: ', block_type)
-        type_template = templates[block_type]
-        result = yaml_block_type_check(yaml_block, type_template)
+        type_format = formats[block_type]
+        result = yaml_block_type_check(yaml_block, type_format)
     return result
 
-def yaml_block_type_check(yaml_block, type_template):
-    result_required = check_condition_required(yaml_block, type_template)
-    result_allowed = check_condition_allowed(yaml_block, type_template)
+def yaml_block_type_check(yaml_block, type_format):
+    result_required = check_condition_required(yaml_block, type_format)
+    result_allowed = check_condition_allowed(yaml_block, type_format)
     result = {'required': result_required, 'required_additional': result_allowed}
     return result
 
-def check_condition_required(yaml_block, type_template):
+def check_condition_required(yaml_block, type_format):
     # group_type: 'required' or 'additional'
 
     result_required = []
-    for condition in type_template: # condition = OrderedDict([('inputs', ...
+    for condition in type_format: # condition = OrderedDict([('inputs', ...
         condition_keys = [key for key in condition.keys()] # ['inputs']
         for key in condition_keys: # key = 'input'
             print('key: ', key)
@@ -78,14 +81,14 @@ def check_condition_required(yaml_block, type_template):
                 result_required.append({key: result_key})
     return result_required
 
-def check_condition_allowed(yaml_block, type_template):
+def check_condition_allowed(yaml_block, type_format):
     # group_type: 'required' or 'additional'
 
     result_allowed = []
     # build list of allowed keys
-    # type_template is a list: [OrderedDict([('inputs', ...)]), OrderedDict([('outputs', ... ]
-    # all_allowed_keys = [[b for b in a.keys()] for a in type_template] #[['inputs'], ['outputs'], ... ]
-    all_allowed_keys = [[b for b in a.keys()][0] for a in type_template] #['inputs', 'outputs', ... ]
+    # type_format is a list: [OrderedDict([('inputs', ...)]), OrderedDict([('outputs', ... ]
+    # all_allowed_keys = [[b for b in a.keys()] for a in type_format] #[['inputs'], ['outputs'], ... ]
+    all_allowed_keys = [[b for b in a.keys()][0] for a in type_format] #['inputs', 'outputs', ... ]
 
     for appeared_key in yaml_block:
         if appeared_key != 'type':
@@ -93,7 +96,7 @@ def check_condition_allowed(yaml_block, type_template):
                 result_key = result_excess
             else:
                 position_key = all_allowed_keys.index(appeared_key)
-                result_key = check_condition_key(yaml_block[appeared_key], type_template[position_key][appeared_key])
+                result_key = check_condition_key(yaml_block[appeared_key], type_format[position_key][appeared_key])
             result_allowed.append({appeared_key: result_key})
     return result_allowed
 
@@ -154,7 +157,7 @@ def check_key(list_block_keys, allowed_keys):
 
 if __name__ == '__main__':
     yaml_command_file = str(sys.argv[1])
-    yaml_template_folder = str(sys.argv[2])
-    print("Check syntax of a YAML file against templates in a folder")
-    result = yaml_file_check_against_folder(yaml_command_file, yaml_template_folder)
+    yaml_format_folder = str(sys.argv[2])
+    print("Check syntax of a YAML file against formats in a folder")
+    result = yaml_module_file_check_against_folder(yaml_command_file, yaml_format_folder)
     print(result)
