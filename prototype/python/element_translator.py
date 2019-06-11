@@ -4,7 +4,7 @@ Translate an element, which is described by the YAML method file
 
 Procedure:
 
-1. When analyzing a YAML file, parse the call to the method, to get:
+1. When analyzing a YAML file, parse the call to the method-element, to get:
 - list of inputs,
 - list of outputs
 2. Parse the YAML of that element, to know the name of the inputs and outputs,
@@ -21,12 +21,24 @@ specific descriptor). The new text after processing the code part is named code.
 code. By requirement, at the end of postprocess part, there will be a variables
 named `code`. Write the value of `code` into the output string.
 """
-def descriptor_file_parse(descriptor_file, method_file):
-    descriptor = descriptor_file_read(descriptor_file)
-    yaml_method = yaml_method_file_read(method_file)
-    preprocess_parse(descriptor_file)
 
-def yaml_method_file_read(yaml_method_file):
-    with open(yaml_method_file, 'r') as yf:
-        yaml_series = yaml.load(yf, Loader=yaml.FullLoader)
-    return yaml_series
+import descriptor_parser
+import utils
+from shared_parameters import *
+
+# def descriptor_file_parse(descriptor_file, method_file):
+#     descriptor = descriptor_file_read(descriptor_file)
+#     yaml_method = yaml_method_file_read(method_file)
+#     preprocess_parse(descriptor_file)
+
+def yaml_single_method_file_read(yaml_method_file):
+    """
+    Read a method file which contains only one block
+    """
+    yaml_block = utils.yaml_file_read(yaml_method_file)
+    # Analyze its commands
+    return
+
+def translate_command_element(command, element_file, descriptor_file):
+    descriptor = descriptor_parser.descriptor_file_read(descriptor_file)
+    yaml_method = yaml_method_file_read(method_file)

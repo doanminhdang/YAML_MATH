@@ -5,12 +5,7 @@ Check syntax of a module described in a YAML file
 import sys
 import oyaml as yaml
 
-result_pass = 1
-result_failed = 0
-result_unknown = -1
-result_missing = -2
-result_excess = -3
-result_notype = -4
+from shared_parameters import *
 
 def yaml_module_file_check_against_folder(yaml_file, yaml_format_folder):
     formats = yaml_format_folder_read(yaml_format_folder)
@@ -36,6 +31,7 @@ def yaml_format_file_read(yaml_format_file):
 def yaml_module_file_check(yaml_file, formats):
     with open(yaml_file, 'r') as yf:
         yaml_series = yaml.load(yf, Loader=yaml.FullLoader)
+    print('YAML series from file: ', yaml_series)
     list_block_names = [key for key in yaml_series.keys()] # convert odict_keys to list
     result = []
     for block_name in list_block_names:
