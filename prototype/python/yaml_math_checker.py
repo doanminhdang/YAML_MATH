@@ -60,8 +60,7 @@ def yaml_block_type_check(yaml_block, type_template):
 
 def check_condition_required(yaml_block, type_template):
     # group_type: 'required' or 'additional'
-    # print('yaml_block: ', yaml_block)
-    # print('type_template: ', type_template)
+
     result_required = []
     for condition in type_template: # condition = OrderedDict([('inputs', ...
         condition_keys = [key for key in condition.keys()] # ['inputs']
@@ -81,8 +80,7 @@ def check_condition_required(yaml_block, type_template):
 
 def check_condition_allowed(yaml_block, type_template):
     # group_type: 'required' or 'additional'
-    # print('yaml_block: ', yaml_block)
-    # print('type_template: ', type_template)
+
     result_allowed = []
     # build list of allowed keys
     # type_template is a list: [OrderedDict([('inputs', ...)]), OrderedDict([('outputs', ... ]
