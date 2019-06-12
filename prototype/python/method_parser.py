@@ -2,7 +2,7 @@
 Parse a YAML block for methods, detect whether it is element or function.
 """
 
-from shared_parameters import *
+from .shared_parameters import *
 
 def read_group(yaml_block):
     type = yaml_block['type']

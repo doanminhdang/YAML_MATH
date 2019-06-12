@@ -22,9 +22,9 @@ code. By requirement, at the end of postprocess part, there will be a variables
 named `code`. Write the value of `code` into the output string.
 """
 
-import descriptor_parser
-import utils
-from shared_parameters import *
+from .descriptor_parser import *
+from .utils import *
+from .shared_parameters import *
 
 # def descriptor_file_parse(descriptor_file, method_file):
 #     descriptor = descriptor_file_read(descriptor_file)
@@ -62,19 +62,28 @@ def translate_command_element(odict_command, element_file, descriptor_file):
     return translated_code
 
 def analyze_inputs(input_names, element_inputs):
+    """
+    Get decoded names from the input_names (list) and the template
+    element_inputs (odict).
+    The output is a dict, with keys from element_inputs and values are picked
+    with corresponding order from input_names.
+    If element_inputs contains both 'name' and 'array_name', then array_name
+    must be the last item. This function automatically assign the rest of the
+    input names into an array, if 'array_name' is found in element_inputs.
+    """
     real_inputs = {}
     index_input_names = 0
     for item in element_inputs:
         # item == OrderedDict([('array_name', 'input_'), ('length', ''), ('type', 'float')])
         if 'name' in item:
-            real_inputs += {item['name']: input_names[index_input_names]}
+            real_inputs.update({item['name']: input_names[index_input_names]})
             index_input_names += 1
-        else if 'array_name' in item:
-            names_left = input_names[index_input_names:-]
+        elif 'array_name' in item:
+            names_left = input_names[index_input_names:]
             array_length = len(names_left)
             for k in range(array_length):
-                real_inputs += {item['array_name'] + '[' + str(k) + ']': names_left[k]}
-        return real_inputs
+                real_inputs.update({item['array_name'] + '[' + str(k) + ']': names_left[k]})
+    return real_inputs
 
 def translate_single_code(input_names, preprocess_string, code_string,\
     postprocess_string):

@@ -1,4 +1,4 @@
-from shared_parameters import *
+from .shared_parameters import *
 
 def descriptor_file_read(descriptor_file):
     with open(descriptor_file, 'r') as text_file:

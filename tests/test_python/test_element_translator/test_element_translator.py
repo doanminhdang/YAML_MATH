@@ -4,6 +4,7 @@ import os, sys
 import oyaml as yaml
 
 from sys import path
+from collections import OrderedDict
 
 # Run pytest in the top folder, the current folder is where pytest runs
 from prototype.python import element_translator
