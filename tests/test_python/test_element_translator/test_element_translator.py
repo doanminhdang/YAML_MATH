@@ -8,6 +8,14 @@ from sys import path
 # Run pytest in the top folder, the current folder is where pytest runs
 from prototype.python import element_translator
 
+def test_analyze_inputs():
+    input_names = ['A_1', 'A_2', 'A_3']
+    template_inputs = [OrderedDict([('array_name', 'input_'), ('length', ''), ('type', 'float')])]
+    real_inputs = element_translator.analyze_inputs(input_names, template_inputs)
+    assert real_inputs == {'input_[0]': 'A_1', 'input_[1]': 'A_2', 'input_[2]': 'A_3'}
+
+
+
 def test_translate_el_short():
     module_file = 'tests/test_python/test_element_translator/averaging.yml'
     command = OrderedDict([('add', ['A_1', 'A_2', 'A_3'])])

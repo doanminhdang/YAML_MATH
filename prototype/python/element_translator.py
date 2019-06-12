@@ -39,6 +39,43 @@ def yaml_single_method_file_read(yaml_method_file):
     # Analyze its commands
     return
 
-def translate_command_element(command, element_file, descriptor_file):
+def translate_command_element(odict_command, element_file, descriptor_file):
     descriptor = descriptor_parser.descriptor_file_read(descriptor_file)
-    yaml_method = yaml_method_file_read(method_file)
+    preprocess_string = descriptor['preprocess']
+    code_string = descriptor['code']
+    postprocess_string = descriptor['postprocess']
+    yaml_element = utils.yaml_file_read(element_file)
+
+    list_command_keys = [key for key in odict_command.keys()]
+    first_key = list_block_keys[0]
+    input_names = odict_command[first_key]
+
+    list_element_keys = [key for key in yaml_element.keys()]
+    element_name = list_element_keys[0]
+    element_inputs = yaml_element[element_name]['inputs']
+    if first_key != element_name:
+        raise ValueError('Element does not match command.')
+    else:
+        real_inputs = analyze_inputs(input_names, element_inputs)
+        translated_code = translate_single_code(real_inputs, preprocess_string,\
+        code_string, postprocess_string)
+    return translated_code
+
+def analyze_inputs(input_names, element_inputs):
+    real_inputs = {}
+    index_input_names = 0
+    for item in element_inputs:
+        # item == OrderedDict([('array_name', 'input_'), ('length', ''), ('type', 'float')])
+        if 'name' in item:
+            real_inputs += {item['name']: input_names[index_input_names]}
+            index_input_names += 1
+        else if 'array_name' in item:
+            names_left = input_names[index_input_names:-]
+            array_length = len(names_left)
+            for k in range(array_length):
+                real_inputs += {item['array_name'] + '[' + str(k) + ']': names_left[k]}
+        return real_inputs
+
+def translate_single_code(input_names, preprocess_string, code_string,\
+    postprocess_string):
+    exec(preprocess_string)
