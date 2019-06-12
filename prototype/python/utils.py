@@ -27,3 +27,7 @@ def json_to_ast(json_series):
     Load a JSON series into AST - abstract syntax tree
     """
     # TODO
+
+def get_var_name_from_bank(number_needed):
+    name_bank = ['Alpha', 'Beta', 'Gamma'] # TODO: expand
+    return name_bank[0:number_needed]

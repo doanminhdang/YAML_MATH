@@ -21,7 +21,7 @@ specific descriptor). The new text after processing the code part is named code.
 code. By requirement, at the end of postprocess part, there will be a variables
 named `code`. Write the value of `code` into the output string.
 """
-
+import re
 from .descriptor_parser import *
 from .utils import *
 from .shared_parameters import *
@@ -49,16 +49,19 @@ def translate_command_element(odict_command, element_file, descriptor_file):
     list_command_keys = [key for key in odict_command.keys()]
     first_key = list_block_keys[0]
     input_names = odict_command[first_key]
+    output_name = utils.get_var_name_from_bank(1)
 
     list_element_keys = [key for key in yaml_element.keys()]
     element_name = list_element_keys[0]
     element_inputs = yaml_element[element_name]['inputs']
+    element_output = yaml_element[element_name]['outputs']
     if first_key != element_name:
         raise ValueError('Element does not match command.')
     else:
         real_inputs = analyze_inputs(input_names, element_inputs)
-        translated_code = translate_single_code(real_inputs, preprocess_string,\
-        code_string, postprocess_string)
+        real_output = analyze_outputs(output_name, element_output)
+        translated_code = translate_single_code(real_inputs, real_output,\
+        preprocess_string, code_string, postprocess_string)
     return translated_code
 
 def analyze_inputs(input_names, element_inputs):
@@ -81,10 +84,76 @@ def analyze_inputs(input_names, element_inputs):
         elif 'array_name' in item:
             names_left = input_names[index_input_names:]
             array_length = len(names_left)
-            for k in range(array_length):
-                real_inputs.update({item['array_name'] + '[' + str(k) + ']': names_left[k]})
+            real_inputs.update({item['array_name']: names_left})
+            # for k in range(array_length):
+                # real_inputs.update({item['array_name'] + '[' + str(k) + ']': names_left[k]})
     return real_inputs
 
-def translate_single_code(input_names, preprocess_string, code_string,\
-    postprocess_string):
+def analyze_outputs(output_name, element_output):
+    output_var = element_output[0]['name']
+    output_dict = {output_var: output_name[0]}
+    return output_dict
+
+def parse_code(code_string):
+    """
+    Parse the multi-line string which contains the code, pick variable in <>.
+    Output: list of segments, each is a dict with key `text` or `var`,
+    and value is the text or the variable name.
+    """
+    code = []
+    var_pattern = r'\<[\w\[\]]+\>'
+    rolling_code = code_string
+    while re.search(var_pattern, rolling_code):
+        start_index = re.search(var_pattern, rolling_code).start()
+        var_group = re.search(var_pattern, rolling_code).group()
+        var_name = var_group.strip('<>')
+        if start_index > 0:
+            text_before = rolling_code[0:start_index]
+            code.append({'text': text_before})
+        code.append({'var': var_name})
+        rolling_code = rolling_code[start_index+len(var_group):]
+    return code
+
+
+def translate_single_code(input_dict, output_dict, preprocess_string,\
+    code_string, postprocess_string):
+    """
+    OLD: input_dict == {'input_[0]': 'A_1', 'input_[1]': 'A_2', 'input_[2]': 'A_3'}
+    input_dict == {'input_': ['A_1', 'A_2', 'A_3']}
+    output_dict == {'output': 'Alpha'}
+    parsed_code == [{'var': 'output'}, {'text': ' := '}, {'var': 'command_text'}]
+    """
+    code_series = parse_code(code_string)
+    print(code_series)
+    for key in input_dict:
+        if isinstance(input_dict[key], list):
+            # it is an array
+            assign_code = key + '=' + '['
+            for item in input_dict[key]:
+                assign_code += '\'' + item + '\','
+            assign_code = assign_code[:-1]+']' # remove the last comma
+        else:
+            assign_code = key + '=' + '\'' + input_dict[key] + '\''
+        exec(assign_code)
+    for key in output_dict:
+        assign_code = key + '=' + '\'' + output_dict[key] + '\''
+        exec(assign_code)
     exec(preprocess_string)
+
+    # 1st round: substitute variable name in code string
+    processed_code = ''
+    for chunk in code_series:
+        if 'text' in chunk:
+            processed_code += chunk['text']
+        if 'var' in chunk:
+            processed_code += eval(chunk['var'])
+    #2nd round: replaced variable names left, which might come from preprocess
+    parsed_2nd_code = parse_code(processed_code)
+    processed_code = ''
+    for chunk in parsed_2nd_code:
+        if 'text' in chunk:
+            processed_code += chunk['text']
+        if 'var' in chunk:
+            processed_code += eval(chunk['var'])
+            #TODO: postprocess
+    return processed_code

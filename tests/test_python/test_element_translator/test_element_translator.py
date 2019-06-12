@@ -13,8 +13,29 @@ def test_analyze_inputs():
     input_names = ['A_1', 'A_2', 'A_3']
     template_inputs = [OrderedDict([('array_name', 'input_'), ('length', ''), ('type', 'float')])]
     real_inputs = element_translator.analyze_inputs(input_names, template_inputs)
-    assert real_inputs == {'input_[0]': 'A_1', 'input_[1]': 'A_2', 'input_[2]': 'A_3'}
+    assert real_inputs == {'input_': ['A_1', 'A_2', 'A_3']}
 
+def test_analyze_outputs():
+    template_outputs = [OrderedDict([('name', 'output'), ('length', '=1'), ('type', 'float')])]
+    output_name = ['Alpha']
+    real_output = element_translator.analyze_outputs(output_name, template_outputs)
+    assert real_output == {'output': 'Alpha'}
+
+def test_parse_code():
+    code = '<output> := <command_text>'
+    parsed_code = element_translator.parse_code(code)
+    assert parsed_code == [{'var': 'output'}, {'text': ' := '}, {'var': 'command_text'}]
+
+def test_translate_single_code():
+    # input_dict = {'input_[0]': 'A_1', 'input_[1]': 'A_2', 'input_[2]': 'A_3'}
+    input_dict = {'input_': ['A_1', 'A_2', 'A_3']}
+    output_dict = {'output': 'Alpha'}
+    preprocess_string = "# Python 3 commands\ncommand_text = \"<input_[0]>\"\nfor k in range(1, len(input_)):\n  command_text += \" + <input_[\" + str(k) + \"]>\""
+    code_string = "<output> := <command_text>"
+    postprocess_string = ''
+    code = element_translator.translate_single_code(input_dict, output_dict,\
+    preprocess_string, code_string, postprocess_string)
+    assert code == "Alpha := A_1 + A_2 + A_3"
 
 
 def test_translate_el_short():
