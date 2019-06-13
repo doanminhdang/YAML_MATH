@@ -106,14 +106,19 @@ def descriptor_parse(descriptor_text):
         # split text from postprocess label, the remaining is for midprocess
         postprocess_part = lines[postprocess_line:]
         lines = lines[:postprocess_line]
-        postprocess_opening = lines.index(descriptor_part_opening)
-        postprocess_closing = lines.index(descriptor_part_closing)
-        # discard any text after the closing of postprocess
+        postprocess_opening = postprocess_part.index(descriptor_part_opening)
+        postprocess_closing = postprocess_part.index(descriptor_part_closing)
+        # discard any text starting from the closing of postprocess
         postprocess = postprocess_part[postprocess_opening+1:postprocess_closing]
     else:
         postprocess = ''
     # remaining of lines is for code (default)
-    code = lines
+    # Check if code label and opening/closing marks exist
+    if descriptor_midprocess_label in lines:
+        code_opening = lines.index(descriptor_part_opening)
+        code_closing = lines.index(descriptor_part_closing)
+        code = lines[code_opening+1:code_closing]
+
     preprocess = '\n'.join(preprocess)
     code = '\n'.join(code)
     postprocess = '\n'.join(postprocess)

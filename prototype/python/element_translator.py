@@ -47,7 +47,7 @@ def translate_command_element(odict_command, element_file, descriptor_file):
     yaml_element = utils.yaml_file_read(element_file)
 
     list_command_keys = [key for key in odict_command.keys()]
-    first_key = list_block_keys[0]
+    first_key = list_command_keys[0]
     input_names = odict_command[first_key]
     output_name = utils.get_var_name_from_bank(1)
 
@@ -55,7 +55,7 @@ def translate_command_element(odict_command, element_file, descriptor_file):
     element_name = list_element_keys[0]
     element_inputs = yaml_element[element_name]['inputs']
     element_output = yaml_element[element_name]['outputs']
-    if first_key != element_name:
+    if not element_name.startswith(first_key): # overloading: add__float for add
         raise ValueError('Element does not match command.')
     else:
         real_inputs = analyze_inputs(input_names, element_inputs)
@@ -123,6 +123,13 @@ def translate_single_code(input_dict, output_dict, preprocess_string,\
     parsed_code == [{'var': 'output'}, {'text': ' := '}, {'var': 'command_text'}]
     """
     _code_series = parse_code(code_string)
+    print('preprocess:')
+    print(preprocess_string)
+    print('code:')
+    print(code_string)
+    print('postprocess:')
+    print(postprocess_string)
+
 
     for _key in input_dict:
         if isinstance(input_dict[_key], list):

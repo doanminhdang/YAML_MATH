@@ -57,4 +57,4 @@ def test_translate_el_short():
     element_file = 'prototype/yaml/methods/add__float.yml'
     descriptor_file = 'prototype/yaml/descriptors/add__float.c'
     translated_text = element_translator.translate_command_element(command, element_file, descriptor_file)
-    assert translated_text == 'A_1 + A_2 + A_3'
+    assert translated_text == 'Alpha := A_1 + A_2 + A_3'
