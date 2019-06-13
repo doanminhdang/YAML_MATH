@@ -22,8 +22,8 @@ code. By requirement, at the end of postprocess part, there will be a variables
 named `code`. Write the value of `code` into the output string.
 """
 import re
-from .descriptor_parser import *
-from .utils import *
+from . import descriptor_parser
+from . import utils
 from .shared_parameters import *
 
 # def descriptor_file_parse(descriptor_file, method_file):
@@ -118,42 +118,51 @@ def parse_code(code_string):
 def translate_single_code(input_dict, output_dict, preprocess_string,\
     code_string, postprocess_string):
     """
-    OLD: input_dict == {'input_[0]': 'A_1', 'input_[1]': 'A_2', 'input_[2]': 'A_3'}
     input_dict == {'input_': ['A_1', 'A_2', 'A_3']}
     output_dict == {'output': 'Alpha'}
     parsed_code == [{'var': 'output'}, {'text': ' := '}, {'var': 'command_text'}]
     """
-    code_series = parse_code(code_string)
-    print(code_series)
-    for key in input_dict:
-        if isinstance(input_dict[key], list):
+    _code_series = parse_code(code_string)
+    print(_code_series)
+    for _key in input_dict:
+        if isinstance(input_dict[_key], list):
             # it is an array
-            assign_code = key + '=' + '['
-            for item in input_dict[key]:
-                assign_code += '\'' + item + '\','
-            assign_code = assign_code[:-1]+']' # remove the last comma
+            _assign_code = _key + '=' + '['
+            for _item in input_dict[_key]:
+                _assign_code += '\'' + _item + '\','
+            _assign_code = _assign_code[:-1]+']' # remove the last comma
         else:
-            assign_code = key + '=' + '\'' + input_dict[key] + '\''
-        exec(assign_code)
-    for key in output_dict:
-        assign_code = key + '=' + '\'' + output_dict[key] + '\''
-        exec(assign_code)
+            _assign_code = _key + '=' + '\'' + input_dict[_key] + '\''
+        exec(_assign_code)
+    for _key in output_dict:
+        _assign_code = _key + '=' + '\'' + output_dict[_key] + '\''
+        exec(_assign_code)
+
     exec(preprocess_string)
 
-    # 1st round: substitute variable name in code string
-    processed_code = ''
-    for chunk in code_series:
-        if 'text' in chunk:
-            processed_code += chunk['text']
-        if 'var' in chunk:
-            processed_code += eval(chunk['var'])
-    #2nd round: replaced variable names left, which might come from preprocess
-    parsed_2nd_code = parse_code(processed_code)
-    processed_code = ''
-    for chunk in parsed_2nd_code:
-        if 'text' in chunk:
-            processed_code += chunk['text']
-        if 'var' in chunk:
-            processed_code += eval(chunk['var'])
-            #TODO: postprocess
-    return processed_code
+    # 1st round: substitute variable names in code string
+    _1st_processed_code = ''
+    for _chunk in _code_series:
+        if 'text' in _chunk:
+            _1st_processed_code += _chunk['text']
+        if 'var' in _chunk:
+            _1st_processed_code += eval(_chunk['var'])
+
+    #2nd round: replace variable names left, which might come from preprocess,
+    # like: input_[0]
+    _parsed_2nd_code = parse_code(_1st_processed_code)
+    code = ''
+    for _chunk in _parsed_2nd_code:
+        if 'text' in _chunk:
+            code += _chunk['text']
+        if 'var' in _chunk:
+            code += eval(_chunk['var'])
+
+    print(code)
+    exec(postprocess_string)
+    print('after postprocess:')
+    final_processed_code = code
+    print(final_processed_code)
+    # Note that at the end of postprocess, `code` could already be changed
+
+    return final_processed_code

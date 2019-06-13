@@ -5,7 +5,7 @@ Check syntax of a module described in a YAML file
 import sys
 import oyaml as yaml
 
-from shared_parameters import *
+from .shared_parameters import *
 
 def yaml_module_file_check_against_folder(yaml_file, yaml_format_folder):
     formats = yaml_format_folder_read(yaml_format_folder)
