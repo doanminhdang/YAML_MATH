@@ -123,7 +123,7 @@ def translate_single_code(input_dict, output_dict, preprocess_string,\
     parsed_code == [{'var': 'output'}, {'text': ' := '}, {'var': 'command_text'}]
     """
     _code_series = parse_code(code_string)
-    print(_code_series)
+
     for _key in input_dict:
         if isinstance(input_dict[_key], list):
             # it is an array
@@ -158,13 +158,13 @@ def translate_single_code(input_dict, output_dict, preprocess_string,\
         if 'var' in _chunk:
             code += eval(_chunk['var'])
 
+    # Preset output code, in case postprocess part is empty
     exec(output_code_descriptor + ' = code')
-    # if output_code_descriptor is 'code', there is a Python bug that
+    # BUG: if output_code_descriptor is 'code', there is a Python bug that
     # variable code is not updated after the next exec
-    print(code)
+
     exec(postprocess_string)
-    print('after postprocess:')
+
     final_processed_code = eval(output_code_descriptor)
-    print(final_processed_code)
 
     return final_processed_code
