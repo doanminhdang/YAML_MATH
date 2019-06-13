@@ -45,7 +45,7 @@ In the YAML file of each method, each of the required or additional keys can hav
 
 - name: so that the name pointing to that key will be used in the translators
 
-- array_name: for the case it is an array, later the items in the given array will be called by the array name with suffix [0], [1]... (an integer in square brackets, starting with index 0). Example: `array_name: input_` will be accessed by the name `input_[0]`, `input_[1]`...
+- array_name: for the case it is an array, later the items in the given array will be called by the array name with suffix [0], [1]... (an integer in square brackets, starting with index 0, the Python way). Example: `array_name: input_` will create an array (Python list) named `input_` for parsing the descriptor, individual items are accessed by the name `input_[0]`, `input_[1]`...
 
 Each "name" or "array_name" include the following required keys:
 
@@ -69,7 +69,7 @@ TODO: consider dropping the requirement for those keys, no key is equivalent to 
 
 # descriptors:
 
-For each method, there must be a descriptor that describes how the method should be translated into the desired programming language; except with overloading methods, for such case only descriptors for the specific methods are required.
+For each element, there must be a descriptor that describes how the method should be translated into the desired programming language; except with overloading methods, for such case only descriptors for the specific methods are required.
 
 Example: with method add.yml there are two versions add__int.yml and add__float.yml (method name followed by double underscore is used as convention to name overloading methods), in order to translate the project into C, there must be add__int.c and add__float.c.
 
@@ -104,4 +104,6 @@ The code in `!preprocess` and `!postprocess` are written in Python 3. The conten
 var_name = 'command_text'
 var_text = exec(var_name)
 ```
-and the result of translating the section `!code` in this example `<output> = <command_text>` is: `'<output> = <input_[0]> + <input_[1]> + <input_[2]>'`. This string will be accessed by the Python code in the section `!postprocess` with the name `<code>`. At the end of `!postprocess`, there must be a string with the name `code`, that would be used by the translator. The translator will replace placeholders of the naming `<var_name>` in `code` to the corresponding variables in the YAML file describing the method.
+and the result of translating the section `!code` in this example `<output> = <command_text>` is: `'<output> = <input_[0]> + <input_[1]> + <input_[2]>'`. This string is stored in the variable `code`. The translator will replace placeholders of the naming `<var_name>` in `code` to the corresponding variables in the YAML file describing the method.
+
+The Python code in the section `!postprocess` with access the currently translated `code` and other variables stored from the `!preprocess` phase. At the end of `!postprocess`, there must be an assignment `code=` to set the final string of `code`, which is the output of the element translator.
