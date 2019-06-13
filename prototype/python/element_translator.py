@@ -158,11 +158,13 @@ def translate_single_code(input_dict, output_dict, preprocess_string,\
         if 'var' in _chunk:
             code += eval(_chunk['var'])
 
+    exec(output_code_descriptor + ' = code')
+    # if output_code_descriptor is 'code', there is a Python bug that
+    # variable code is not updated after the next exec
     print(code)
     exec(postprocess_string)
     print('after postprocess:')
-    final_processed_code = code
+    final_processed_code = eval(output_code_descriptor)
     print(final_processed_code)
-    # Note that at the end of postprocess, `code` could already be changed
 
     return final_processed_code

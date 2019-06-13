@@ -20,7 +20,8 @@ err_msg_incomplete_block_postprocess = 9
 err_msg_wrong_order_pre_post_process = 10
 err_msg_no_code_output = 11
 
-convention_code_assign = 'code='
+output_code_descriptor = 'final_code' # note: cannot be 'code'
+convention_code_assign = output_code_descriptor + '='
 descriptor_part_opening = '{|'
 descriptor_part_closing = '|}'
 descriptor_preprocess_label = '!preprocess:'
