@@ -21,10 +21,11 @@ def check_descriptor_syntax(descriptor_text):
     - If preprocess part exist: it must have an opening then a closing markup
     - If postprocess part exist: it must have an opening then a closing markup
     - the preprocess part must be before the postprocess part
-    - in the postprocess part, there must be a variable named `code` to be assigned at the last line
+    - in the postprocess part, there must be a variable named `final_code`
+    (global param: convention_code_assign) to be assigned at the last line
     Output: check_flag, error_message
     - check_flag: True is good, False is bad
-    - error_message: id of error, specifed in the module. 0 for no error.
+    - error_message: id of error, specifed in the global params. 0 for no error.
     """
     lines = descriptor_text.split('\n')
     check_flag = True
